@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Upload PDF</h2>
+
+<input type="file" id="file">
+<button onclick="upload()">Upload</button>
+
+<script>
+async function upload() {
+  const file = document.getElementById("file").files[0];
+
+  if (!file) {
+    alert("Please select a file");
+    return;
+  }
+
+  // Step 1: Get upload URL
+  const res = await fetch("https://6q5jskm5ec.execute-api.ap-south-1.amazonaws.com/dev/upload", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      file_name: file.name
+    })
+  });
+
+  const data = await res.json();
+
+  // Step 2: Upload file to S3
+ await fetch(data.upload_url, {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/pdf"   
+  },
+  body: file
+});
+  alert("Uploaded Successfully 🎉");
+}
+</script>
+
+</body>
+</html>
