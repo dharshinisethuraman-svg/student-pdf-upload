@@ -29,5 +29,7 @@ A serverless web application that allows users to upload PDF files securely to c
 - Worked with serverless architecture
 - Debugged real-world integration issues
 
+## Note: Live AWS resources were taken down after the free tier period to avoid unexpected charges. The Lambda function above was recreated post-teardown to match the original logic and is included here as reference.
+
 ## 👩‍💻 Author
 Dharshini SR
