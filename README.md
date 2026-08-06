@@ -29,8 +29,16 @@ A serverless web application that allows users to upload PDF files securely to c
 - Worked with serverless architecture
 - Debugged real-world integration issues
 
-## Development & Debugging!
-[API Gateway Routes](screenshots/api-gateway-routes.png) *Configured the /upload POST route in API Gateway* ![Testing with Hoppscotch](screenshots/hoppscotch-test.png) *Tested the endpoint using Hoppscotch before connecting the frontend* ![CORS Error Debugging](screenshots/cors-error.png) *Encountered and resolved CORS policy errors by adding proper Access-Control-Allow-Origin headers in the API response
+## Development & Debugging
+
+![API Gateway Routes](screenshots/api-gateway-routes.png)
+*Configured the /upload POST route in API Gateway*
+
+![Testing with Hoppscotch](screenshots/hoppscotch-test.png)
+*Tested the endpoint using Hoppscotch before connecting the frontend*
+
+![CORS Error Debugging](screenshots/cors-error.png)
+*Encountered and resolved CORS policy errors by adding proper Access-Control-Allow-Origin headers in the API response*
 
 ## Note: Live AWS resources were taken down after the free tier period to avoid unexpected charges. The Lambda function above was recreated post-teardown to match the original logic and is included here as reference.
 
