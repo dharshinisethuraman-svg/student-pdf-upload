@@ -1,43 +1,168 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student PDF Upload</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4ecf7 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+
+  .card {
+    background: #ffffff;
+    padding: 40px 36px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+  }
+
+  .card h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #1a1a2e;
+    font-size: 24px;
+  }
+
+  .card p {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .file-input-wrapper {
+    border: 2px dashed #c7d2fe;
+    border-radius: 10px;
+    padding: 24px 16px;
+    margin-bottom: 20px;
+    background: #f8fafc;
+    transition: border-color 0.2s ease;
+  }
+
+  .file-input-wrapper:hover {
+    border-color: #6366f1;
+  }
+
+  input[type="file"] {
+    width: 100%;
+    font-size: 14px;
+    color: #374151;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    background: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  button:hover {
+    background: #4f46e5;
+  }
+
+  button:disabled {
+    background: #a5b4fc;
+    cursor: not-allowed;
+  }
+
+  #status {
+    margin-top: 16px;
+    font-size: 14px;
+    min-height: 20px;
+  }
+
+  #status.success {
+    color: #059669;
+  }
+
+  #status.error {
+    color: #dc2626;
+  }
+</style>
+</head>
 <body>
 
-<h2>Upload PDF</h2>
+<div class="card">
+  <h2>📄 Upload PDF</h2>
+  <p>Securely upload your PDF directly to cloud storage</p>
 
-<input type="file" id="file">
-<button onclick="upload()">Upload</button>
+  <div class="file-input-wrapper">
+    <input type="file" id="file" accept="application/pdf">
+  </div>
+
+  <button id="uploadBtn" onclick="upload()">Upload</button>
+
+  <div id="status"></div>
+</div>
 
 <script>
 async function upload() {
-  const file = document.getElementById("file").files[0];
+  const fileInput = document.getElementById("file");
+  const status = document.getElementById("status");
+  const btn = document.getElementById("uploadBtn");
+  const file = fileInput.files[0];
+
+  status.className = "";
+  status.textContent = "";
 
   if (!file) {
-    alert("Please select a file");
+    status.className = "error";
+    status.textContent = "Please select a file";
     return;
   }
 
-  // Step 1: Get upload URL
-  const res = await fetch("https://6q5jskm5ec.execute-api.ap-south-1.amazonaws.com/dev/upload", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      file_name: file.name
-    })
-  });
+  btn.disabled = true;
+  btn.textContent = "Uploading...";
 
-  const data = await res.json();
+  try {
+    // Step 1: Get upload URL
+    const res = await fetch("https://6q5jskm5ec.execute-api.ap-south-1.amazonaws.com/dev/upload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        file_name: file.name
+      })
+    });
 
-  // Step 2: Upload file to S3
- await fetch(data.upload_url, {
-  method: "PUT",
-  headers: {
-    "Content-Type": "application/pdf"   
-  },
-  body: file
-});
-  alert("Uploaded Successfully 🎉");
+    const data = await res.json();
+
+    // Step 2: Upload file to S3
+    await fetch(data.upload_url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/pdf"
+      },
+      body: file
+    });
+
+    status.className = "success";
+    status.textContent = "Uploaded Successfully 🎉";
+  } catch (err) {
+    status.className = "error";
+    status.textContent = "Upload failed. Please try again.";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Upload";
+  }
 }
 </script>
 
